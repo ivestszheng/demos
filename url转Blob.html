@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    window.onload = () => {
+      urlToBlob("http://192.168.101.56:9777/static/zipToOfd.ofd", blobToFile);
+    };
+
+    function urlToBlob(the_url, callback) {
+      let xhr = new XMLHttpRequest();
+      xhr.open("get", the_url, true);
+      xhr.responseType = "blob";
+      xhr.onload = function () {
+        if (this.status == 200) {
+          if (callback) {
+            callback(this.response);
+          }
+        }
+      };
+      xhr.send();
+    }
+
+    function blobToFile(blob,filename='默认名称') {
+      const file = new File([blob], filename, {type: blob.type, lastModified: Date.now()});
+      console.log(file);
+    }
+  </script>
+</html>
