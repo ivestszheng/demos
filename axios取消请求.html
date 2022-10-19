@@ -1,0 +1,67 @@
+<!--
+ * @Descripttion: 
+ * @Author: 无声 ivestszheng@qq.com
+ * @Date: 2022-10-19 13:12:50
+ * @LastEditors: 无声 ivestszheng@qq.com
+ * @LastEditTime: 2022-10-19 13:37:13
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>axios取消请求</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+    <button onclick="sendRequest()">发送请求</button>
+    <button onclick="cancelRequest(controller)">取消请求</button>
+</body>
+<script>
+    var controller = null
+    // function sendRequest() {
+    //     const controller = new AbortController()
+    //     axios({
+    //         method: 'post',
+    //         url: 'http://192.168.0.164:8888/index/findAll',
+    //         data: {
+    //             "categoryId": 1
+    //         },
+    //         signal: controller.signal
+    //     })
+    //         .then(function (response) {
+    //             console.log('请求完成', response.data);
+    //         });
+
+    //     setTimeout(() => {
+    //         cancelRequest(controller)
+    //     }, 2000);
+    // }
+
+    function sendRequest() {
+        controller = new AbortController()
+        axios({
+            method: 'post',
+            url: 'http://192.168.0.164:8888/index/findAll',
+            data: {
+                "categoryId": 1
+            },
+            signal: controller.signal
+        })
+            .then(function (response) {
+                console.log('请求完成', response.data);
+            });
+    }
+
+    function cancelRequest(controller) {
+        controller.abort()
+        console.log('取消请求');
+    }
+
+    // 思考：如果要批量取消请求，应该是要把多个 controller 放在队列中，去循环调用 abort。
+</script>
+
+</html>
