@@ -1,0 +1,76 @@
+<!--
+ * @Descripttion: 
+ * @Author: 无声 ivestszheng@qq.com
+ * @Date: 2022-10-12 17:17:17
+ * @LastEditors: 无声 ivestszheng@qq.com
+ * @LastEditTime: 2022-10-19 16:27:30
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>a页面</title>
+</head>
+
+<body>
+    <p>这是发送消息页面</p>
+    <button onclick="handleOnClick()">打开接受信息的页面</button>
+    <input type="text" id="input">
+    <p>接收到的消息</p>
+    <p id="content">
+</body>
+<script>
+    const oInput = document.querySelector("#input");
+    let targetWindow = null;
+
+    function handleOnClick() {
+        openNewWindow();
+    }
+
+    window.addEventListener("message", (e) => {
+        if (e.data.msg === "加载完成") {
+            const date = new Date();
+            document.querySelector("#content").innerText = `${JSON.stringify(e.data.msg)
+                } ${date.getTime()}`;
+            targetWindow.postMessage({ msg: "我知道你加载完成了" }, "*");
+        }
+    });
+
+    function openNewWindow() {
+        targetWindow = window.open(
+            "",
+            "_blank",
+            "height=500,width=500,top=0,left=0"
+        );
+        
+        targetWindow.onload = () => {
+            const div=document.createElement('div');
+            div.id='target'
+            targetWindow.document.body.appendChild(div)
+            const oTarget = targetWindow.document.querySelector('#target')
+
+            targetWindow.addEventListener("message", (e) => {
+                console.log("接收数据：", e.data.msg);
+                oTarget.innerText = `接收到数据：${e.data.msg}`
+            });
+
+            targetWindow.opener.postMessage({ msg: "加载完成" }, "*");
+        };
+    }
+
+    window.onload = () => {
+        oInput.addEventListener("input", () => {
+            console.log("inputChange", oInput.value);
+            // 假设跟 iframe 通信，要使用 iframe 对象的 contentWindow
+            if (targetWindow) {
+                targetWindow.postMessage({ msg: oInput.value }, "*");
+            }
+        });
+    };
+
+</script>
+
+</html>
